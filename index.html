@@ -15,110 +15,37 @@
         <link rel="stylesheet" href="css/leaflet-measure.css">
 
         <style>
-            html, body {
-                width: 100%;
-                height: 100%;
-                padding: 0;
-                margin: 0;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                overflow: hidden;
-            }
+            html, body { width: 100%; height: 100%; padding: 0; margin: 0; font-family: sans-serif; overflow: hidden; }
             
-            /* Título Superior */
             #header {
-                position: absolute;
-                top: 0;
-                width: 100%;
-                height: 60px;
-                background-color: #003366; /* Azul Institucional */
-                color: white;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 1000;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+                position: absolute; top: 0; width: 100%; height: 50px;
+                background-color: #003366; color: white;
+                display: flex; align-items: center; justify-content: center;
+                z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
             }
             
-            #header h1 {
-                margin: 0;
-                font-size: 1.2rem;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-            }
+            #header h1 { margin: 0; font-size: 1rem; text-transform: uppercase; }
 
-            #map {
-                width: 100%;
-                height: calc(100% - 60px);
-                margin-top: 60px;
-            }
+            #map { width: 100%; height: calc(100% - 50px); margin-top: 50px; }
 
-            /* Panel Lateral Estilo Atlas */
+            /* Panel Lateral */
             #sidebar {
-                position: absolute;
-                top: 70px;
-                left: 10px;
-                width: 320px;
-                max-height: 80%;
-                background: white;
-                z-index: 999;
-                overflow-y: auto;
-                display: none; /* Se oculta por defecto */
-                border-radius: 8px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-                border-top: 5px solid #e74c3c; /* Color llamativo */
+                position: absolute; top: 60px; left: 10px; width: 300px;
+                max-height: 85%; background: white; z-index: 1001;
+                overflow-y: auto; display: none; border-radius: 5px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+                border-top: 4px solid #d32f2f;
             }
 
-            .sidebar-content {
-                padding: 15px;
-            }
-
-            .sidebar-logo {
-                display: block;
-                margin: 0 auto 15px;
-                max-width: 120px;
-            }
-
-            .sidebar-content h2 {
-                font-size: 1.1rem;
-                color: #333;
-                border-bottom: 2px solid #eee;
-                padding-bottom: 5px;
-            }
-
-            /* Estilo de tabla dentro del panel */
-            .sidebar-content table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 10px;
-            }
-
-            .sidebar-content td {
-                padding: 8px;
-                border-bottom: 1px solid #f0f0f0;
-                font-size: 0.9rem;
-            }
-
-            .sidebar-content th {
-                text-align: left;
-                background: #f9f9f9;
-                padding: 8px;
-                font-size: 0.8rem;
-                color: #666;
-            }
-
-            .sidebar-content img {
-                width: 100%;
-                border-radius: 4px;
-                margin-top: 10px;
-                border: 2px solid #ddd;
-            }
-
-            .close-sidebar {
-                float: right;
-                cursor: pointer;
-                font-size: 1.5rem;
-                line-height: 1;
-            }
+            .sidebar-content { padding: 15px; }
+            .sidebar-logo { display: block; margin: 0 auto 10px; max-width: 100px; }
+            .close-sidebar { float: right; cursor: pointer; font-size: 1.2rem; font-weight: bold; }
+            
+            /* Ajuste para que las tablas de QGIS se vean bien en el panel */
+            #feature-info table { width: 100%; border-collapse: collapse; }
+            #feature-info th { text-align: left; font-size: 0.8rem; background: #f2f2f2; padding: 5px; }
+            #feature-info td { font-size: 0.85rem; padding: 5px; border-bottom: 1px solid #eee; }
+            #feature-info img { width: 100%; margin-top: 10px; border-radius: 3px; }
         </style>
     </head>
     <body>
@@ -130,9 +57,7 @@
             <div class="sidebar-content">
                 <span class="close-sidebar" onclick="closeSidebar()">&times;</span>
                 <img src="images/fph.png" class="sidebar-logo" alt="Logo FPH">
-                <div id="feature-info">
-                    <p style="text-align:center; color:#888;">Haga clic en un punto para ver detalles</p>
-                </div>
+                <div id="feature-info"></div>
             </div>
         </div>
 
@@ -157,100 +82,90 @@
         <script>
         var map = L.map('map', {
             zoomControl:false, maxZoom:28, minZoom:1
-        }).fitBounds([[-17.64,-65.96],[-17.54,-65.85]]);
+        }).fitBounds([[-17.6405,-65.9694],[-17.5453,-65.8554]]);
 
-        // --- MAPAS BASE (DINÁMICOS Y GRATUITOS) ---
-        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        });
-
-        var googleSat = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-            attribution: '© Google Maps'
-        });
-
-        var lightMap = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            attribution: '© CARTO'
-        }).addTo(map);
+        // --- MAPAS BASE ---
+        var googleSat = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {attribution: 'Google'});
+        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: 'OSM'});
+        var sinMapa = L.layerGroup(); // Capa vacía
 
         var baseMaps = {
-            "Mapa Claro": lightMap,
             "Satélite Google": googleSat,
-            "OpenStreetMap": osm
+            "OpenStreetMap": osm,
+            "Sin Mapa Base": sinMapa
         };
 
-        // --- FUNCIONES DE PANEL LATERAL ---
+        // --- FUNCIONES DEL PANEL ---
         function showSidebar(content) {
             document.getElementById('feature-info').innerHTML = content;
             document.getElementById('sidebar').style.display = 'block';
         }
-
-        function closeSidebar() {
-            document.getElementById('sidebar').style.display = 'none';
-        }
-
-        // Cerrar panel si se hace clic en el mapa (fuera de un objeto)
-        map.on('click', function() {
-            closeSidebar();
-        });
-
+        function closeSidebar() { document.getElementById('sidebar').style.display = 'none'; }
+        
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
 
-        // --- CAPA RGM (PUNTOS CON FOTO) ---
-        function pop_RGM1_3(feature, layer) {
-            var content = '<h2>Detalles del Punto RGM</h2>' +
-                          '<table>' +
-                          '<tr><th>Punto:</th><td>' + (feature.properties['Punto'] || 'N/A') + '</td></tr>' +
-                          '<tr><th>Norte:</th><td>' + (feature.properties['Norte'] || 'N/A') + '</td></tr>' +
-                          '<tr><th>Este:</th><td>' + (feature.properties['Este'] || 'N/A') + '</td></tr>' +
-                          '</table>';
-            
-            if (feature.properties['Foto']) {
-                // Limpieza de nombre de foto igual que en qgis2web
-                var imgName = String(feature.properties['Foto']).replace(/[\\/:]/g, '_').trim();
-                content += '<img src="images/' + imgName + '" alt="Foto RGM">';
-            }
-
-            layer.on('click', function(e) {
-                L.DomEvent.stopPropagation(e); // Evita cerrar el panel al hacer clic
-                showSidebar(content);
-            });
+        // --- SIMBOLOGÍA ORIGINAL DE QGIS (COPIADA DE TU CÓDIGO) ---
+        function style_MANZANOSINE2024_0_0() {
+            return { pane: 'pane_MANZANOSINE2024_0', opacity: 1, color: 'rgba(170,170,170,1.0)', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(133,182,111,0.0)', interactive: false };
+        }
+        function style_MUNICIPIOS_CBBA_1_0() {
+            return { pane: 'pane_MUNICIPIOS_CBBA_1', opacity: 1, color: 'rgba(14,0,208,1.0)', weight: 3.0, fill: true, fillOpacity: 1, fillColor: 'rgba(255,255,255,0.0)', interactive: false };
+        }
+        function style_AUs_CBBA_2_0() {
+            return { pane: 'pane_AUs_CBBA_2', opacity: 1, color: 'rgba(35,35,35,1.0)', weight: 2.0, fill: true, fillOpacity: 1, fillColor: 'rgba(190,207,80,0.0)', interactive: false };
+        }
+        function style_RGM1_3_0() {
+            return { pane: 'pane_RGM1_3', radius: 6.0, opacity: 1, color: 'rgba(255,255,255,1.0)', weight: 3.0, fill: true, fillOpacity: 1, fillColor: 'rgba(219,30,42,1.0)', interactive: true };
         }
 
-        map.createPane('pane_RGM1_3');
-        map.getPane('pane_RGM1_3').style.zIndex = 600;
+        // --- CARGA DE CAPAS CON INTERACCIÓN AL PANEL ---
+        map.createPane('pane_MANZANOSINE2024_0');
+        var layer_MANZANOSINE2024_0 = new L.geoJson(json_MANZANOSINE2024_0, { pane: 'pane_MANZANOSINE2024_0', style: style_MANZANOSINE2024_0_0 }).addTo(map);
 
+        map.createPane('pane_MUNICIPIOS_CBBA_1');
+        var layer_MUNICIPIOS_CBBA_1 = new L.geoJson(json_MUNICIPIOS_CBBA_1, { pane: 'pane_MUNICIPIOS_CBBA_1', style: style_MUNICIPIOS_CBBA_1_0 }).addTo(map);
+
+        map.createPane('pane_AUs_CBBA_2');
+        var layer_AUs_CBBA_2 = new L.geoJson(json_AUs_CBBA_2, { pane: 'pane_AUs_CBBA_2', style: style_AUs_CBBA_2_0 }).addTo(map);
+
+        map.createPane('pane_RGM1_3');
         var layer_RGM1_3 = new L.geoJson(json_RGM1_3, {
             pane: 'pane_RGM1_3',
-            onEachFeature: pop_RGM1_3,
-            pointToLayer: function (feature, latlng) {
-                return L.circleMarker(latlng, {
-                    radius: 8.0,
-                    color: 'white',
-                    weight: 2,
-                    fillColor: '#d32f2f',
-                    fillOpacity: 1
+            style: style_RGM1_3_0,
+            pointToLayer: function (feature, latlng) { return L.circleMarker(latlng, style_RGM1_3_0()); },
+            onEachFeature: function(feature, layer) {
+                layer.on('click', function(e) {
+                    L.DomEvent.stopPropagation(e);
+                    // Aquí construimos el contenido de la tabla del panel
+                    var info = '<table>' +
+                        '<tr><th>Punto:</th><td>' + (feature.properties['Punto'] || '') + '</td></tr>' +
+                        '<tr><th>Latitude:</th><td>' + (feature.properties['Latitude'] || '') + '</td></tr>' +
+                        '<tr><th>Longitude:</th><td>' + (feature.properties['Longitude'] || '') + '</td></tr>' +
+                        '<tr><th>Norte:</th><td>' + (feature.properties['Norte'] || '') + '</td></tr>' +
+                        '<tr><th>Este:</th><td>' + (feature.properties['Este'] || '') + '</td></tr>';
+                    
+                    if (feature.properties['Foto']) {
+                        var imgPath = "images/" + String(feature.properties['Foto']).replace(/[\\/:]/g, '_').trim();
+                        info += '<tr><td colspan="2"><img src="' + imgPath + '"></td></tr>';
+                    }
+                    info += '</table>';
+                    showSidebar(info);
                 });
             }
         }).addTo(map);
 
-        // --- OTRAS CAPAS (MUNICIPIOS, MANZANOS) ---
-        var layer_MUNICIPIOS_CBBA_1 = new L.geoJson(json_MUNICIPIOS_CBBA_1, {
-            style: { color: 'rgba(0,51,102,1.0)', weight: 2, fillOpacity: 0 }
-        }).addTo(map);
-
-        var layer_MANZANOSINE2024_0 = new L.geoJson(json_MANZANOSINE2024_0, {
-            style: { color: '#aaa', weight: 0.5, fillOpacity: 0 }
-        }).addTo(map);
-
         // --- CONTROLES ---
-        L.control.zoom({ position: 'topright' }).addTo(map);
         L.control.layers(baseMaps, {
-            "Puntos RGM": layer_RGM1_3,
-            "Municipios": layer_MUNICIPIOS_CBBA_1,
-            "Manzanos": layer_MANZANOSINE2024_0
+            "RGM1": layer_RGM1_3,
+            "AUs_CBBA": layer_AUs_CBBA_2,
+            "MUNICIPIOS_CBBA": layer_MUNICIPIOS_CBBA_1,
+            "MANZANOS INE 2024": layer_MANZANOSINE2024_0
         }, {collapsed: false}).addTo(map);
-
+        
+        L.control.zoom({ position: 'topright' }).addTo(map);
         L.control.locate({position: 'topright'}).addTo(map);
+
+        map.on('click', function() { closeSidebar(); });
 
         </script>
     </body>
