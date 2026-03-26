@@ -88,9 +88,9 @@
         var googleSat = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {attribution: 'Google'});
         var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: 'OSM'});
         var sinMapa = L.layerGroup(); // Capa vacía
-        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-
+        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
+        attribution: '© OpenStreetMap contributors'{
+    
         var baseMaps = {
             "Mapa Claro": lightMap,
             "Satélite Google": googleSat,
