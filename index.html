@@ -87,13 +87,13 @@
         // --- MAPAS BASE ---
         var googleSat = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {attribution: 'Google'});
         var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: 'OSM'});
-        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '© OpenStreetMap contributors'});
+        var lightMap = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {attribution: '© CARTO'});
         var sinMapa = L.layerGroup(); // Capa vacía
     
         var baseMaps = {
-            "Mapa Claro": lightMap,
             "Satélite Google": googleSat,
             "OpenStreetMap": osm,
+            "Mapa Claro": lightMap,
             "Sin Mapa Base": sinMapa
         };
 
