@@ -15,291 +15,224 @@
         <link rel="stylesheet" href="css/leaflet-measure.css">
 
         <style>
-            /* Fuentes modernas */
             @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@500&display=swap');
 
             html, body { width: 100%; height: 100%; padding: 0; margin: 0; font-family: 'Montserrat', sans-serif; overflow: hidden; background-color: #f0f0f0;}
             
-            /* Cabecera Innovadora - Glassmorphism con Aura */
+            /* Cabecera con Transparencia Leve y Logo a la Izquierda */
             #header {
                 position: absolute; top: 0; width: 100%; height: 65px;
-                background: linear-gradient(135deg, rgba(0,51,102,0.8) 0%, rgba(0,85,153,0.8) 100%);
-                backdrop-filter: blur(10px); /* Efecto desenfoque */
+                background: rgba(0, 51, 102, 0.75); /* Transparencia leve */
+                backdrop-filter: blur(8px);
                 color: white;
-                display: flex; align-items: center; justify-content: space-between; /* Espaciado simétrico */
-                z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-                padding: 0 25px; /* Padding simétrico */
-                border-bottom: 2px solid rgba(255,255,255,0.1);
+                display: flex; align-items: center; justify-content: flex-start;
+                z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.3);
+                padding: 0 20px;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
             }
-            
-            #header .title-container { display: flex; align-items: center; }
-            #header h1 { margin: 0; font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
-            #header h1 .geovisor { font-size: 1.8rem; font-weight: 500; }
-            #header h1 .foundation { font-size: 0.9rem; font-weight: 400; font-family: 'Montserrat', sans-serif; opacity: 0.7; margin-left: 10px; }
+            .header-logo { height: 45px; margin-right: 20px; }
+            #header h1 { margin: 0; font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: baseline; }
+            #header h1 .geovisor { font-size: 1.6rem; font-weight: 500; color: #00f2fe; }
+            #header h1 .foundation { font-size: 0.85rem; font-weight: 400; opacity: 0.9; margin-left: 12px; font-family: 'Montserrat'; }
 
-            #header .logo-container img { height: 45px; }
+            /* Buscador Horizontal Debajo del Título */
+            #search-bar-container {
+                position: absolute; top: 75px; left: 50%; transform: translateX(-50%);
+                z-index: 1000; display: flex; align-items: center;
+                background: rgba(255, 255, 255, 0.9);
+                padding: 5px 15px; border-radius: 30px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                border: 1px solid rgba(0,242,254,0.5);
+                backdrop-filter: blur(5px);
+            }
+            #search-input {
+                border: none; background: transparent; padding: 8px; width: 250px;
+                font-family: 'Montserrat'; font-size: 0.9rem; outline: none;
+            }
+            #btn-zoom-municipio {
+                background: #003366; color: white; border: none; padding: 8px 15px;
+                border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.75rem;
+                margin-left: 10px; transition: 0.3s; text-transform: uppercase;
+            }
+            #btn-zoom-municipio:hover { background: #00f2fe; color: #003366; }
 
             #map { width: 100%; height: calc(100% - 65px); margin-top: 65px; }
 
-            /* Panel Lateral Rediseñado */
-            #sidebar {
-                position: absolute; top: 80px; left: 20px; width: 320px;
-                max-height: 80%; background: rgba(255,255,255,0.9); z-index: 1001;
-                overflow-y: auto; display: none; border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                border-top: 6px solid #00f2fe; /* Borde neón */
-                border-bottom: 6px solid #4facfe;
-                transition: all 0.3s ease;
+            /* Paneles (Sidebar y Capas) con Diseño Unificado */
+            .custom-panel {
+                position: absolute; background: rgba(255,255,255,0.95); z-index: 1001;
+                border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                border-top: 6px solid #00f2fe; border-bottom: 6px solid #4facfe;
+                transition: all 0.3s ease; overflow-y: auto;
+            }
+            
+            /* Panel Izquierdo (Información) */
+            #sidebar { top: 130px; left: 20px; width: 320px; max-height: 70%; display: none; }
+
+            /* Panel Derecho (Capas - Simbología) */
+            #layer-panel { top: 130px; right: 20px; width: 300px; max-height: 70%; display: none; }
+            
+            .panel-header { 
+                padding: 15px 20px; border-bottom: 1px solid #eee; 
+                display: flex; justify-content: space-between; align-items: center;
+                background: rgba(0,51,102,0.03);
+            }
+            .panel-header h2 { 
+                margin: 0; font-family: 'Oswald', sans-serif; font-size: 1.1rem; 
+                color: #003366; text-transform: uppercase; letter-spacing: 1px;
             }
 
             .sidebar-content { padding: 20px; }
-            .sidebar-logo { display: block; margin: 0 auto 15px; max-width: 110px; opacity: 0.8;}
-            .close-sidebar { float: right; cursor: pointer; font-size: 1.5rem; font-weight: bold; color: #888; transition: color 0.2s; }
-            .close-sidebar:hover { color: #d32f2f; }
+            .close-btn { cursor: pointer; font-size: 1.2rem; color: #888; transition: 0.2s; }
+            .close-btn:hover { color: #d32f2f; }
             
-            #feature-info h2 { font-family: 'Oswald', sans-serif; color: #003366; font-size: 1.4rem; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 15px;}
+            /* Estilo de tablas de info */
             #feature-info table { width: 100%; border-collapse: collapse; }
-            #feature-info th { text-align: left; font-size: 0.85rem; background: rgba(0,51,102,0.05); padding: 8px 10px; color: #666;}
-            #feature-info td { font-size: 0.9rem; padding: 8px 10px; border-bottom: 1px solid #eee; color: #333; }
-            #feature-info img { width: 100%; margin-top: 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+            #feature-info th { text-align: left; font-size: 0.8rem; background: rgba(0,51,102,0.05); padding: 8px; color: #666;}
+            #feature-info td { font-size: 0.85rem; padding: 8px; border-bottom: 1px solid #eee; }
+            #feature-info img { width: 100%; border-radius: 10px; margin-top: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
 
-            /* Botones Flotantes Unificados y Destacados */
-            .leaflet-bar { border: none !important; box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important; border-radius: 12px !important; }
-            .leaflet-bar a { background-color: rgba(255,255,255,0.9) !important; color: #333 !important; width: 50px !important; height: 50px !important; line-height: 50px !important; border-radius: 12px !important; font-size: 1.3rem !important; transition: all 0.2s ease; }
-            .leaflet-bar a:hover { background-color: #003366 !important; color: white !important; transform: translateY(-2px); }
-
-            /* Posicionamiento simétrico de los controles */
-            .leaflet-top.leaflet-right { top: 80px; right: 20px; }
-            .leaflet-top.leaflet-left { top: 80px; left: 20px; }
-
-            /* Buscador Innovador */
-            #search-container {
-                position: absolute; top: 150px; left: 20px; z-index: 1000;
-                background: rgba(255,255,255,0.9); border-radius: 12px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3); padding: 10px;
-                display: flex; align-items: center; width: auto; transition: width 0.3s ease;
-                border: 2px solid transparent;
-            }
-            #search-container:hover, #search-container.active { border-color: #00f2fe; }
-            #search-input { border: none; background: transparent; font-size: 1rem; color: #333; padding: 5px 10px; width: 220px; outline: none; }
-            #search-button { color: #888; font-size: 1.3rem; cursor: pointer; margin-left: 5px; transition: color 0.2s; }
-            #search-button:hover { color: #003366; }
-
-            #toggle-search {
-                position: absolute; top: 150px; left: 20px; z-index: 1000;
-                background-color: rgba(255,255,255,0.9); width: 50px; height: 50px;
-                border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            /* Botones Flotantes */
+            .floating-controls { position: absolute; right: 20px; top: 75px; z-index: 1000; display: flex; flex-direction: row; gap: 10px; }
+            .circle-btn {
+                width: 45px; height: 45px; background: white; border-radius: 50%;
                 display: flex; align-items: center; justify-content: center;
-                cursor: pointer; font-size: 1.3rem; color: #333; transition: all 0.2s ease;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2); cursor: pointer; color: #003366; transition: 0.3s;
             }
-            #toggle-search:hover { background-color: #003366; color: white; transform: translateY(-2px); }
+            .circle-btn:hover { background: #003366; color: white; transform: scale(1.1); }
 
-            /* Control de Capas Rediseñado - Estilo Árbol Dinámico */
-            .leaflet-control-layers-tree {
-                background: rgba(255,255,255,0.9) !important; border-radius: 15px !important;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important; padding: 15px !important;
-                border-top: 5px solid #4facfe;
-            }
-            .leaflet-control-layers-tree label { font-size: 0.9rem !important; color: #333 !important; padding: 5px 0; }
-            .leaflet-control-layers-tree .leaflet-layers-group-label { font-family: 'Oswald', sans-serif; font-size: 1.1rem !important; color: #003366 !important; text-transform: uppercase; letter-spacing: 1px; }
-            .leaflet-control-layers-tree-closed-symbol, .leaflet-control-layers-tree-opened-symbol { color: #4facfe; font-size: 1rem; margin-right: 5px; }
-
-            /* Estilo de los iconos de la leyenda */
-            .leaflet-control-layers-list img { vertical-align: middle; margin-right: 8px; max-height: 20px; }
-            .rgm-icon { background-color: #d32f2f; width: 14px; height: 14px; border-radius: 50%; display: inline-block; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3); margin-right: 8px; vertical-align: middle;}
-            .color-line-icon { width: 14px; height: 14px; display: inline-block; border-radius: 3px; margin-right: 8px; vertical-align: middle;}
-
+            /* Ajuste del control de capas de Leaflet para que entre en nuestro panel */
+            .leaflet-control-layers-tree { border: none !important; box-shadow: none !important; background: transparent !important; padding: 0 !important; }
+            .rgm-icon { background-color: #d32f2f; width: 12px; height: 12px; border-radius: 50%; display: inline-block; border: 2px solid white; margin-right: 8px;}
         </style>
     </head>
     <body>
         <div id="header">
-            <div class="title-container">
-                <h1><span class="geovisor">GEOVISOR</span><span class="foundation">Fundación Pro Hábitat - 2026 V1</span></h1>
-            </div>
-            <div class="logo-container">
-                <img src="images/fph.png" alt="Logo FPH">
-            </div>
+            <img src="imágenes/fph.png" class="header-logo" alt="Logo FPH">
+            <h1><span class="geovisor">GEOVISOR</span><span class="foundation">Fundación Pro Hábitat - 2026 V1</span></h1>
         </div>
 
-        <div id="sidebar">
-            <div class="sidebar-content">
-                <span class="close-sidebar" onclick="closeSidebar()">&times;</span>
-                <img src="images/fph.png" class="sidebar-logo" alt="Logo FPH">
-                <div id="feature-info"></div>
+        <div id="search-bar-container">
+            <i class="fas fa-search" style="color:#003366"></i>
+            <input type="text" id="search-input" placeholder="Escriba un municipio (Ej: Punata)...">
+            <button id="btn-zoom-municipio">Zoom al Municipio</button>
+        </div>
+
+        <div class="floating-controls">
+            <div class="circle-btn" onclick="toggleLayerPanel()" title="Simbología y Capas"><i class="fas fa-layer-group"></i></div>
+        </div>
+
+        <div id="sidebar" class="custom-panel">
+            <div class="panel-header">
+                <h2>Información del Punto</h2>
+                <span class="close-btn" onclick="closeSidebar()">&times;</span>
             </div>
+            <div class="sidebar-content" id="feature-info"></div>
+        </div>
+
+        <div id="layer-panel" class="custom-panel">
+            <div class="panel-header">
+                <h2>Simbología / Referencias</h2>
+                <span class="close-btn" onclick="toggleLayerPanel()">&times;</span>
+            </div>
+            <div class="sidebar-content" id="layer-tree-container">
+                </div>
         </div>
 
         <div id="map"></div>
 
-        <div id="toggle-search"><i class="fas fa-map"></i></div>
-        <div id="search-container" style="display:none;">
-            <input type="text" id="search-input" placeholder="Buscar Municipio...">
-            <i class="fas fa-search" id="search-button"></i>
-        </div>
-
-        <script src="js/qgis2web_expressions.js"></script>
         <script src="js/leaflet.js"></script>
         <script src="js/L.Control.Layers.Tree.min.js"></script>
         <script src="js/L.Control.Locate.min.js"></script>
-        <script src="js/leaflet-hash.js"></script>
-        <script src="js/Autolinker.min.js"></script>
-        <script src="js/rbush.min.js"></script>
-        <script src="js/labelgun.min.js"></script>
-        <script src="js/labels.js"></script>
-        <script src="js/leaflet-measure.js"></script>
-        <script src="js/leaflet-search.js"></script>
         
-        <script src="data/MANZANOSINE2024_0.js"></script>
-        <script src="data/MUNICIPIOS_CBBA_1.js"></script>
-        <script src="data/AUs_CBBA_2.js"></script>
-        <script src="data/RGM1_3.js"></script>
+        <script src="datos/MANZANOSINE2024_0.js"></script>
+        <script src="datos/MUNICIPIOS_CBBA_1.js"></script>
+        <script src="datos/AUs_CBBA_2.js"></script>
+        <script src="datos/RGM1_3.js"></script>
 
         <script>
+        // Inicializar mapa quitando la bandera de Leaflet
         var map = L.map('map', {
-            zoomControl:false, maxZoom:28, minZoom:1
+            zoomControl: false,
+            attributionControl: false 
         }).fitBounds([[-17.6405,-65.9694],[-17.5453,-65.8554]]);
 
-        // --- MAPAS BASE (Agrupados y con Aura) ---
-        var googleSat = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {attribution: 'Google'});
-        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: 'OSM'});
+        // Atribución personalizada
+        L.control.attribution({prefix: 'JUAN BAUTISTA | FPH 2026'}).addTo(map);
+
+        // Mapas Base
+        var googleSat = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}');
+        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
         var sinMapa = L.layerGroup();
-    
-        // Mapa base predeterminado
-        osm.addTo(map);
 
-        function showSidebar(content) {
-            document.getElementById('feature-info').innerHTML = content;
-            document.getElementById('sidebar').style.display = 'block';
-        }
-        function closeSidebar() { document.getElementById('sidebar').style.display = 'none'; }
-        
-        // --- SIMBOLOGÍA (Ajustada para Simetría y Visibilidad) ---
-        function style_MANZANOSINE2024_0_0() { return { opacity: 1, color: 'rgba(170,170,170,1.0)', weight: 0.8, fill: true, fillOpacity: 0.2, fillColor: 'rgba(0,0,0,0.1)', interactive: false }; }
-        function style_MUNICIPIOS_CBBA_1_0() { return { opacity: 1, color: 'rgba(14,0,208,1.0)', weight: 3.5, fill: false, interactive: false }; }
-        function style_AUs_CBBA_2_0() { return { opacity: 1, color: 'rgba(35,35,35,1.0)', weight: 2.5, fill: false, interactive: false }; }
-        function style_RGM1_3_0() {
-            return { radius: 8.5, opacity: 1, color: 'white', weight: 3.0, fill: true, fillOpacity: 1, fillColor: 'rgba(219,30,42,1.0)', interactive: true };
-        }
+        // Estilos
+        function style_RGM() { return {radius: 8, fillColor: '#d32f2f', color: 'white', weight: 3, fillOpacity: 1}; }
 
-        // --- CARGA DE CAPAS (Orden Correcto: RGM arriba) ---
-        var layer_MANZANOSINE2024_0 = new L.geoJson(json_MANZANOSINE2024_0, { style: style_MANZANOSINE2024_0_0 }).addTo(map);
-        var layer_MUNICIPIOS_CBBA_1 = new L.geoJson(json_MUNICIPIOS_CBBA_1, { style: style_MUNICIPIOS_CBBA_1_0 }).addTo(map);
-        var layer_AUs_CBBA_2 = new L.geoJson(json_AUs_CBBA_2, { style: style_AUs_CBBA_2_0 }).addTo(map);
+        var layer_MANZANOS = L.geoJson(json_MANZANOSINE2024_0, {style: {color:'#aaa', weight:1, fillOpacity:0.15}}).addTo(map);
+        var layer_MUNICIPIOS = L.geoJson(json_MUNICIPIOS_CBBA_1, {style: {color:'blue', weight:3, fill:false}}).addTo(map);
+        var layer_AUs = L.geoJson(json_AUs_CBBA_2, {style: {color:'#333', weight:2, fill:false}}).addTo(map);
 
-        // CAPA RGM CON PANEL E IMÁGENES
-        var layer_RGM1_3 = new L.geoJson(json_RGM1_3, {
-            zIndexOffset: 1000, // Siempre arriba de todo
-            pointToLayer: function (feature, latlng) {
-                return L.circleMarker(latlng, style_RGM1_3_0());
-            },
-            onEachFeature: function(feature, layer) {
-                layer.on('click', function(e) {
+        var layer_RGM = L.geoJson(json_RGM1_3, {
+            pointToLayer: function (f, latlng) { return L.circleMarker(latlng, style_RGM()); },
+            onEachFeature: function(f, l) {
+                l.on('click', function(e) {
                     L.DomEvent.stopPropagation(e);
-                    var props = feature.properties;
-                    var content = '<h2>Detalles del Punto RGM</h2><table>' +
-                        '<tr><th>Punto:</th><td>' + (props['Punto'] || 'S/N') + '</td></tr>' +
-                        '<tr><th>Norte:</th><td>' + (props['Norte'] || '-') + '</td></tr>' +
-                        '<tr><th>Este:</th><td>' + (props['Este'] || '-') + '</td></tr>';
-                    
-                    if (props['Foto']) {
-                        var nombreArchivo = String(props['Foto']).split(/[\\/]/).pop();
-                        content += '<tr><td colspan="2"><img src="images/' + nombreArchivo + '" onerror="this.src=\'https://via.placeholder.com/300x200?text=Foto+No+Encontrada\'"></td></tr>';
+                    var p = f.properties;
+                    var html = '<table>';
+                    html += '<tr><th>Punto RGM:</th><td>' + (p.Punto || 'S/N') + '</td></tr>';
+                    html += '<tr><th>Norte:</th><td>' + (p.Norte || '-') + '</td></tr>';
+                    html += '<tr><th>Este:</th><td>' + (p.Este || '-') + '</td></tr>';
+                    if(p.Foto) {
+                        var n = String(p.Foto).split(/[\\/]/).pop();
+                        html += '<tr><td colspan="2"><img src="imágenes/'+n+'" onerror="this.src=\'https://via.placeholder.com/250x150?text=Foto+no+encontrada\'"></td></tr>';
                     }
-                    content += '</table>';
-                    showSidebar(content);
+                    html += '</table>';
+                    document.getElementById('feature-info').innerHTML = html;
+                    document.getElementById('sidebar').style.display = 'block';
                 });
             }
         }).addTo(map);
 
-        // --- CONTROLES Y LEYENDA (Estructura Árbol y Símbolos) ---
-        
-        var baseTree = [
-            {
-                label: 'Mapas Referenciales Base',
-                children: [
-                    {label: 'OpenStreetMap', layer: osm},
-                    {label: 'Satélite Google', layer: googleSat},
-                    {label: 'Sin Mapa Base', layer: sinMapa}
-                ]
-            }
-        ];
-
+        // Arbol de Capas
+        var baseTree = { label: 'Mapas Referenciales Base', children: [ {label: 'Satélite Google', layer: googleSat}, {label: 'OpenStreetMap', layer: osm}, {label: 'Sin Mapa Base', layer: sinMapa} ] };
         var overlaysTree = [
-            { label: '<span class="rgm-icon"></span> RGM1', layer: layer_RGM1_3 },
-            { label: '<span class="color-line-icon" style="background-color:rgba(14,0,208,0.5); border: 2px solid rgba(14,0,208,1.0)"></span> Municipios CBBA', layer: layer_MUNICIPIOS_CBBA_1 },
-            { label: '<span class="color-line-icon" style="background-color:rgba(35,35,35,0.5); border: 2px solid rgba(35,35,35,1.0)"></span> Áreas Urbanas CBBA', layer: layer_AUs_CBBA_2 },
-            { label: '<span class="color-line-icon" style="background-color:rgba(0,0,0,0.1); border: 1px solid rgba(170,170,170,1.0)"></span> Manzanos INE 2024', layer: layer_MANZANOSINE2024_0 }
+            { label: '<span class="rgm-icon"></span> Puntos RGM', layer: layer_RGM },
+            { label: 'Municipios CBBA', layer: layer_MUNICIPIOS },
+            { label: 'Áreas Urbanas', layer: layer_AUs },
+            { label: 'Manzanos', layer: layer_MANZANOS }
         ];
 
-        var layerControl = L.control.layers.tree(baseTree, overlaysTree, {
-            namedToggle: false,
-            selectorBack: false,
-            closedSymbol: '<i class="fas fa-folder"></i>',
-            openedSymbol: '<i class="fas fa-folder-open"></i>',
-            collapseAll: 'Colapsar todo',
-            expandAll: 'Expandir todo',
-            collapsed: false, // Desplegado por defecto para aura de control
-        }).addTo(map);
+        var layerControl = L.control.layers.tree(baseTree, overlaysTree, {collapsed:false});
+        layerControl.addTo(map);
         
-        // Mover control de capas a la derecha para simetría
-        document.querySelector('.leaflet-top.leaflet-right').appendChild(document.querySelector('.leaflet-control-layers-tree'));
+        // Mover la leyenda al panel derecho personalizado
+        var htmlLeyenda = layerControl.getContainer();
+        document.getElementById('layer-tree-container').appendChild(htmlLeyenda);
 
-        // --- CONTROLES DE ZOOM Y UBICACIÓN ---
-        L.control.zoom({ position: 'topright' }).addTo(map);
-        L.control.locate({position: 'topright', locateOptions: {maxZoom: 18}}).addTo(map);
-
-        // --- FUNCIONALIDAD DEL BUSCADOR ---
-        var searchContainer = document.getElementById('search-container');
-        var toggleSearchBtn = document.getElementById('toggle-search');
-        var searchInput = document.getElementById('search-input');
-        var searchButton = document.getElementById('search-button');
-
-        // Función para buscar municipio
-        function searchMunicipio() {
-            var searchTerm = searchInput.value.toLowerCase().trim();
-            if (searchTerm === "") return;
-
-            var foundLayer = null;
-            layer_MUNICIPIOS_CBBA_1.eachLayer(function(layer) {
-                if (layer.feature.properties.municipio.toLowerCase().includes(searchTerm)) {
-                    foundLayer = layer;
-                    return;
-                }
-            });
-
-            if (foundLayer) {
-                map.fitBounds(foundLayer.getBounds(), {padding: [20, 20]});
-                closeSidebar();
-            } else {
-                alert("Municipio no encontrado. Intente con otro nombre.");
-            }
-            searchContainer.style.display = 'none';
-            searchContainer.classList.remove('active');
+        // Funciones de Paneles
+        function closeSidebar() { document.getElementById('sidebar').style.display = 'none'; }
+        function toggleLayerPanel() {
+            var p = document.getElementById('layer-panel');
+            p.style.display = (p.style.display === 'block') ? 'none' : 'block';
         }
 
-        // Eventos del buscador
-        toggleSearchBtn.addEventListener('click', function() {
-            if (searchContainer.style.display === 'none') {
-                searchContainer.style.display = 'flex';
-                searchContainer.classList.add('active');
-                searchInput.focus();
-            } else {
-                searchContainer.style.display = 'none';
-                searchContainer.classList.remove('active');
-            }
+        // --- LÓGICA DEL BUSCADOR DE MUNICIPIOS ---
+        document.getElementById('btn-zoom-municipio').addEventListener('click', function() {
+            var text = document.getElementById('search-input').value.toLowerCase().trim();
+            var found = false;
+            layer_MUNICIPIOS.eachLayer(function(layer) {
+                if (layer.feature.properties.municipio && layer.feature.properties.municipio.toLowerCase().includes(text)) {
+                    map.fitBounds(layer.getBounds());
+                    found = true;
+                }
+            });
+            if (!found) alert("No se encontró el municipio: " + text);
         });
 
-        searchButton.addEventListener('click', searchMunicipio);
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') searchMunicipio();
-        });
-
-        // Eventos generales del mapa
-        map.on('click', function() {
-            closeSidebar();
-            searchContainer.style.display = 'none';
-            searchContainer.classList.remove('active');
-        });
+        // Controles adicionales
+        L.control.zoom({position:'topright'}).addTo(map);
+        L.control.locate({position:'topright'}).addTo(map);
+        map.on('click', function() { closeSidebar(); });
 
         </script>
     </body>
