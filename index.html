@@ -18,96 +18,287 @@
             /* Fuentes modernas */
             @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Oswald:wght@500&display=swap');
 
-            html, body { width: 100%; height: 100%; padding: 0; margin: 0; font-family: 'Montserrat', sans-serif; overflow: hidden; background-color: #f0f0f0;}
-            
-            /* Cabecera Innovadora - Glassmorphism con Aura */
-            #header {
-                position: absolute; top: 0; width: 100%; height: 65px;
-                background: linear-gradient(135deg, rgba(0,51,102,0.8) 0%, rgba(0,85,153,0.8) 100%);
-                backdrop-filter: blur(10px); /* Efecto desenfoque */
-                color: white;
-                display: flex; align-items: center; justify-content: space-between; /* Espaciado simétrico */
-                z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-                padding: 0 25px; /* Padding simétrico */
-                border-bottom: 2px solid rgba(255,255,255,0.1);
+            html, body { 
+                width: 100%; 
+                height: 100%; 
+                padding: 0; 
+                margin: 0; 
+                font-family: 'Montserrat', sans-serif; 
+                overflow: hidden; 
+                background-color: #f0f0f0;
             }
             
-            #header .title-container { display: flex; align-items: center; }
-            #header h1 { margin: 0; font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
-            #header h1 .geovisor { font-size: 1.8rem; font-weight: 500; }
-            #header h1 .foundation { font-size: 0.9rem; font-weight: 400; font-family: 'Montserrat', sans-serif; opacity: 0.7; margin-left: 10px; }
+            /* Cabecera Innovadora - Glassmorphism con Aura */
+            /* CAMBIO 1: Logo a la izquierda, título a la derecha */
+            #header {
+                position: absolute; 
+                top: 0; 
+                width: 100%; 
+                height: 65px;
+                background: linear-gradient(135deg, rgba(0,51,102,0.8) 0%, rgba(0,85,153,0.8) 100%);
+                backdrop-filter: blur(10px); 
+                color: white;
+                display: flex; 
+                align-items: center; 
+                justify-content: space-between; 
+                z-index: 1000; 
+                box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+                padding: 0 25px; 
+                border-bottom: 2px solid rgba(255,255,255,0.1);
+                flex-direction: row-reverse; /* Esto invierte el orden visual */
+            }
+            
+            #header .title-container { 
+                display: flex; 
+                align-items: center; 
+            }
 
-            #header .logo-container img { height: 45px; }
+            #header h1 { 
+                margin: 0; 
+                font-family: 'Oswald', sans-serif; 
+                text-transform: uppercase; 
+                letter-spacing: 2px; 
+            }
 
-            #map { width: 100%; height: calc(100% - 65px); margin-top: 65px; }
+            #header h1 .geovisor { 
+                font-size: 1.8rem; 
+                font-weight: 500; 
+            }
+
+            #header h1 .foundation { 
+                font-size: 0.9rem; 
+                font-weight: 400; 
+                font-family: 'Montserrat', sans-serif; 
+                opacity: 0.7; 
+                margin-left: 10px; 
+            }
+
+            #header .logo-container img { 
+                height: 45px; 
+            }
+
+            #map { 
+                width: 100%; 
+                height: calc(100% - 65px); 
+                margin-top: 65px; 
+            }
 
             /* Panel Lateral Rediseñado */
             #sidebar {
-                position: absolute; top: 80px; left: 20px; width: 320px;
-                max-height: 80%; background: rgba(255,255,255,0.9); z-index: 1001;
-                overflow-y: auto; display: none; border-radius: 15px;
+                position: absolute; 
+                top: 80px; 
+                left: 20px; 
+                width: 320px;
+                max-height: 80%; 
+                background: rgba(255,255,255,0.9); 
+                z-index: 1001;
+                overflow-y: auto; 
+                display: none; 
+                border-radius: 15px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                border-top: 6px solid #00f2fe; /* Borde neón */
+                border-top: 6px solid #00f2fe; 
                 border-bottom: 6px solid #4facfe;
                 transition: all 0.3s ease;
             }
 
-            .sidebar-content { padding: 20px; }
-            .sidebar-logo { display: block; margin: 0 auto 15px; max-width: 110px; opacity: 0.8;}
-            .close-sidebar { float: right; cursor: pointer; font-size: 1.5rem; font-weight: bold; color: #888; transition: color 0.2s; }
-            .close-sidebar:hover { color: #d32f2f; }
+            .sidebar-content { 
+                padding: 20px; 
+            }
+
+            .sidebar-logo { 
+                display: block; 
+                margin: 0 auto 15px; 
+                max-width: 110px; 
+                opacity: 0.8;
+            }
+
+            .close-sidebar { 
+                float: right; 
+                cursor: pointer; 
+                font-size: 1.5rem; 
+                font-weight: bold; 
+                color: #888; 
+                transition: color 0.2s; 
+            }
+
+            .close-sidebar:hover { 
+                color: #d32f2f; 
+            }
             
-            #feature-info h2 { font-family: 'Oswald', sans-serif; color: #003366; font-size: 1.4rem; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 15px;}
-            #feature-info table { width: 100%; border-collapse: collapse; }
-            #feature-info th { text-align: left; font-size: 0.85rem; background: rgba(0,51,102,0.05); padding: 8px 10px; color: #666;}
-            #feature-info td { font-size: 0.9rem; padding: 8px 10px; border-bottom: 1px solid #eee; color: #333; }
-            #feature-info img { width: 100%; margin-top: 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+            #feature-info h2 { 
+                font-family: 'Oswald', sans-serif; 
+                color: #003366; 
+                font-size: 1.4rem; 
+                border-bottom: 2px solid #eee; 
+                padding-bottom: 5px; 
+                margin-bottom: 15px;
+            }
+
+            #feature-info table { 
+                width: 100%; 
+                border-collapse: collapse; 
+            }
+
+            #feature-info th { 
+                text-align: left; 
+                font-size: 0.85rem; 
+                background: rgba(0,51,102,0.05); 
+                padding: 8px 10px; 
+                color: #666;
+            }
+
+            #feature-info td { 
+                font-size: 0.9rem; 
+                padding: 8px 10px; 
+                border-bottom: 1px solid #eee; 
+                color: #333; 
+            }
+
+            #feature-info img { 
+                width: 100%; 
+                margin-top: 15px; 
+                border-radius: 10px; 
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+            }
 
             /* Botones Flotantes Unificados y Destacados */
-            .leaflet-bar { border: none !important; box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important; border-radius: 12px !important; }
-            .leaflet-bar a { background-color: rgba(255,255,255,0.9) !important; color: #333 !important; width: 50px !important; height: 50px !important; line-height: 50px !important; border-radius: 12px !important; font-size: 1.3rem !important; transition: all 0.2s ease; }
-            .leaflet-bar a:hover { background-color: #003366 !important; color: white !important; transform: translateY(-2px); }
+            .leaflet-bar { 
+                border: none !important; 
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3) !important; 
+                border-radius: 12px !important; 
+            }
+
+            .leaflet-bar a { 
+                background-color: rgba(255,255,255,0.9) !important; 
+                color: #333 !important; 
+                width: 50px !important; 
+                height: 50px !important; 
+                line-height: 50px !important; 
+                border-radius: 12px !important; 
+                font-size: 1.3rem !important; 
+                transition: all 0.2s ease; 
+            }
+
+            .leaflet-bar a:hover { 
+                background-color: #003366 !important; 
+                color: white !important; 
+                transform: translateY(-2px); 
+            }
 
             /* Posicionamiento simétrico de los controles */
-            .leaflet-top.leaflet-right { top: 80px; right: 20px; }
-            .leaflet-top.leaflet-left { top: 80px; left: 20px; }
+            .leaflet-top.leaflet-right { 
+                top: 80px; 
+                right: 20px; 
+            }
 
-            /* Buscador Innovador */
+            .leaflet-top.leaflet-left { 
+                top: 80px; 
+                left: 20px; 
+            }
+
+            /* Buscador Innovador - CAMBIO 2: Posicionado a la derecha debajo del título */
             #search-container {
-                position: absolute; top: 150px; left: 20px; z-index: 1000;
-                background: rgba(255,255,255,0.9); border-radius: 12px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3); padding: 10px;
-                display: flex; align-items: center; width: auto; transition: width 0.3s ease;
-                border: 2px solid transparent;
+                position: absolute; 
+                top: 75px; 
+                right: 25px; 
+                z-index: 1001;
+                background: rgba(255,255,255,0.95); 
+                border-radius: 30px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
+                padding: 5px 15px;
+                display: flex; 
+                align-items: center; 
+                width: auto; 
+                border: 2px solid #4facfe;
             }
-            #search-container:hover, #search-container.active { border-color: #00f2fe; }
-            #search-input { border: none; background: transparent; font-size: 1rem; color: #333; padding: 5px 10px; width: 220px; outline: none; }
-            #search-button { color: #888; font-size: 1.3rem; cursor: pointer; margin-left: 5px; transition: color 0.2s; }
-            #search-button:hover { color: #003366; }
 
-            #toggle-search {
-                position: absolute; top: 150px; left: 20px; z-index: 1000;
-                background-color: rgba(255,255,255,0.9); width: 50px; height: 50px;
-                border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-                display: flex; align-items: center; justify-content: center;
-                cursor: pointer; font-size: 1.3rem; color: #333; transition: all 0.2s ease;
+            #search-input { 
+                border: none; 
+                background: transparent; 
+                font-size: 1rem; 
+                color: #333; 
+                padding: 5px 10px; 
+                width: 220px; 
+                outline: none; 
             }
-            #toggle-search:hover { background-color: #003366; color: white; transform: translateY(-2px); }
 
-            /* Control de Capas Rediseñado - Estilo Árbol Dinámico */
+            #search-button { 
+                color: #003366; 
+                font-size: 1.3rem; 
+                cursor: pointer; 
+                margin-left: 5px; 
+                transition: color 0.2s; 
+            }
+
+            /* Control de Capas Rediseñado - CAMBIO 3: Título Superior y colapsado */
             .leaflet-control-layers-tree {
-                background: rgba(255,255,255,0.9) !important; border-radius: 15px !important;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important; padding: 15px !important;
+                background: rgba(255,255,255,0.9) !important; 
+                border-radius: 15px !important;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important; 
+                padding: 15px !important;
                 border-top: 5px solid #4facfe;
             }
-            .leaflet-control-layers-tree label { font-size: 0.9rem !important; color: #333 !important; padding: 5px 0; }
-            .leaflet-control-layers-tree .leaflet-layers-group-label { font-family: 'Oswald', sans-serif; font-size: 1.1rem !important; color: #003366 !important; text-transform: uppercase; letter-spacing: 1px; }
-            .leaflet-control-layers-tree-closed-symbol, .leaflet-control-layers-tree-opened-symbol { color: #4facfe; font-size: 1rem; margin-right: 5px; }
+
+            .leaflet-control-layers-tree::before {
+                content: "SIMBOLOGÍA / REFERENCIAS";
+                display: block; 
+                font-family: 'Oswald'; 
+                font-size: 0.9rem; 
+                color: #003366;
+                border-bottom: 1px solid #ddd; 
+                margin-bottom: 10px; 
+                padding-bottom: 5px;
+                font-weight: bold; 
+                text-align: center;
+            }
+
+            .leaflet-control-layers-tree label { 
+                font-size: 0.9rem !important; 
+                color: #333 !important; 
+                padding: 5px 0; 
+            }
+
+            .leaflet-control-layers-tree .leaflet-layers-group-label { 
+                font-family: 'Oswald', sans-serif; 
+                font-size: 1.1rem !important; 
+                color: #003366 !important; 
+                text-transform: uppercase; 
+                letter-spacing: 1px; 
+            }
+
+            .leaflet-control-layers-tree-closed-symbol, .leaflet-control-layers-tree-opened-symbol { 
+                color: #4facfe; 
+                font-size: 1rem; 
+                margin-right: 5px; 
+            }
 
             /* Estilo de los iconos de la leyenda */
-            .leaflet-control-layers-list img { vertical-align: middle; margin-right: 8px; max-height: 20px; }
-            .rgm-icon { background-color: #d32f2f; width: 14px; height: 14px; border-radius: 50%; display: inline-block; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3); margin-right: 8px; vertical-align: middle;}
-            .color-line-icon { width: 14px; height: 14px; display: inline-block; border-radius: 3px; margin-right: 8px; vertical-align: middle;}
+            .leaflet-control-layers-list img { 
+                vertical-align: middle; 
+                margin-right: 8px; 
+                max-height: 20px; 
+            }
+
+            .rgm-icon { 
+                background-color: #d32f2f; 
+                width: 14px; 
+                height: 14px; 
+                border-radius: 50%; 
+                display: inline-block; 
+                border: 2px solid white; 
+                box-shadow: 0 2px 5px rgba(0,0,0,0.3); 
+                margin-right: 8px; 
+                vertical-align: middle;
+            }
+
+            .color-line-icon { 
+                width: 14px; 
+                height: 14px; 
+                display: inline-block; 
+                border-radius: 3px; 
+                margin-right: 8px; 
+                vertical-align: middle;
+            }
 
         </style>
     </head>
@@ -131,10 +322,9 @@
 
         <div id="map"></div>
 
-        <div id="toggle-search"><i class="fas fa-map"></i></div>
-        <div id="search-container" style="display:none;">
+        <div id="search-container">
             <input type="text" id="search-input" placeholder="Buscar Municipio...">
-            <i class="fas fa-search" id="search-button"></i>
+            <i class="fas fa-search" id="search-button" onclick="searchMunicipio()"></i>
         </div>
 
         <script src="js/qgis2web_expressions.js"></script>
@@ -156,8 +346,16 @@
 
         <script>
         var map = L.map('map', {
-            zoomControl:false, maxZoom:28, minZoom:1
+            zoomControl:false, 
+            maxZoom:28, 
+            minZoom:1,
+            attributionControl: false /* CAMBIO 4: Quitar logo Leaflet original */
         }).fitBounds([[-17.6405,-65.9694],[-17.5453,-65.8554]]);
+
+        /* Créditos personalizados */
+        L.control.attribution({ 
+            prefix: 'JUAN BAUTISTA | FPH 2026' 
+        }).addTo(map);
 
         // --- MAPAS BASE (Agrupados y con Aura) ---
         var googleSat = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {attribution: 'Google'});
@@ -171,24 +369,44 @@
             document.getElementById('feature-info').innerHTML = content;
             document.getElementById('sidebar').style.display = 'block';
         }
-        function closeSidebar() { document.getElementById('sidebar').style.display = 'none'; }
+
+        function closeSidebar() { 
+            document.getElementById('sidebar').style.display = 'none'; 
+        }
         
         // --- SIMBOLOGÍA (Ajustada para Simetría y Visibilidad) ---
-        function style_MANZANOSINE2024_0_0() { return { opacity: 1, color: 'rgba(170,170,170,1.0)', weight: 0.8, fill: true, fillOpacity: 0.2, fillColor: 'rgba(0,0,0,0.1)', interactive: false }; }
-        function style_MUNICIPIOS_CBBA_1_0() { return { opacity: 1, color: 'rgba(14,0,208,1.0)', weight: 3.5, fill: false, interactive: false }; }
-        function style_AUs_CBBA_2_0() { return { opacity: 1, color: 'rgba(35,35,35,1.0)', weight: 2.5, fill: false, interactive: false }; }
+        function style_MANZANOSINE2024_0_0() { 
+            return { opacity: 1, color: 'rgba(170,170,170,1.0)', weight: 0.8, fill: true, fillOpacity: 0.2, fillColor: 'rgba(0,0,0,0.1)', interactive: false }; 
+        }
+
+        function style_MUNICIPIOS_CBBA_1_0() { 
+            return { opacity: 1, color: 'rgba(14,0,208,1.0)', weight: 3.5, fill: false, interactive: false }; 
+        }
+
+        function style_AUs_CBBA_2_0() { 
+            return { opacity: 1, color: 'rgba(35,35,35,1.0)', weight: 2.5, fill: false, interactive: false }; 
+        }
+
         function style_RGM1_3_0() {
             return { radius: 8.5, opacity: 1, color: 'white', weight: 3.0, fill: true, fillOpacity: 1, fillColor: 'rgba(219,30,42,1.0)', interactive: true };
         }
 
         // --- CARGA DE CAPAS (Orden Correcto: RGM arriba) ---
-        var layer_MANZANOSINE2024_0 = new L.geoJson(json_MANZANOSINE2024_0, { style: style_MANZANOSINE2024_0_0 }).addTo(map);
-        var layer_MUNICIPIOS_CBBA_1 = new L.geoJson(json_MUNICIPIOS_CBBA_1, { style: style_MUNICIPIOS_CBBA_1_0 }).addTo(map);
-        var layer_AUs_CBBA_2 = new L.geoJson(json_AUs_CBBA_2, { style: style_AUs_CBBA_2_0 }).addTo(map);
+        var layer_MANZANOSINE2024_0 = new L.geoJson(json_MANZANOSINE2024_0, { 
+            style: style_MANZANOSINE2024_0_0 
+        }).addTo(map);
+
+        var layer_MUNICIPIOS_CBBA_1 = new L.geoJson(json_MUNICIPIOS_CBBA_1, { 
+            style: style_MUNICIPIOS_CBBA_1_0 
+        }).addTo(map);
+
+        var layer_AUs_CBBA_2 = new L.geoJson(json_AUs_CBBA_2, { 
+            style: style_AUs_CBBA_2_0 
+        }).addTo(map);
 
         // CAPA RGM CON PANEL E IMÁGENES
         var layer_RGM1_3 = new L.geoJson(json_RGM1_3, {
-            zIndexOffset: 1000, // Siempre arriba de todo
+            zIndexOffset: 1000, 
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, style_RGM1_3_0());
             },
@@ -212,7 +430,6 @@
         }).addTo(map);
 
         // --- CONTROLES Y LEYENDA (Estructura Árbol y Símbolos) ---
-        
         var baseTree = [
             {
                 label: 'Mapas Referenciales Base',
@@ -231,6 +448,7 @@
             { label: '<span class="color-line-icon" style="background-color:rgba(0,0,0,0.1); border: 1px solid rgba(170,170,170,1.0)"></span> Manzanos INE 2024', layer: layer_MANZANOSINE2024_0 }
         ];
 
+        // Leyenda Colapsada por defecto
         var layerControl = L.control.layers.tree(baseTree, overlaysTree, {
             namedToggle: false,
             selectorBack: false,
@@ -238,10 +456,10 @@
             openedSymbol: '<i class="fas fa-folder-open"></i>',
             collapseAll: 'Colapsar todo',
             expandAll: 'Expandir todo',
-            collapsed: false, // Desplegado por defecto para aura de control
+            collapsed: true, 
         }).addTo(map);
         
-        // Mover control de capas a la derecha para simetría
+        // Mover control de capas a la derecha
         document.querySelector('.leaflet-top.leaflet-right').appendChild(document.querySelector('.leaflet-control-layers-tree'));
 
         // --- CONTROLES DE ZOOM Y UBICACIÓN ---
@@ -249,21 +467,14 @@
         L.control.locate({position: 'topright', locateOptions: {maxZoom: 18}}).addTo(map);
 
         // --- FUNCIONALIDAD DEL BUSCADOR ---
-        var searchContainer = document.getElementById('search-container');
-        var toggleSearchBtn = document.getElementById('toggle-search');
-        var searchInput = document.getElementById('search-input');
-        var searchButton = document.getElementById('search-button');
-
-        // Función para buscar municipio
         function searchMunicipio() {
-            var searchTerm = searchInput.value.toLowerCase().trim();
+            var searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
             if (searchTerm === "") return;
 
             var foundLayer = null;
             layer_MUNICIPIOS_CBBA_1.eachLayer(function(layer) {
                 if (layer.feature.properties.municipio.toLowerCase().includes(searchTerm)) {
                     foundLayer = layer;
-                    return;
                 }
             });
 
@@ -271,34 +482,20 @@
                 map.fitBounds(foundLayer.getBounds(), {padding: [20, 20]});
                 closeSidebar();
             } else {
-                alert("Municipio no encontrado. Intente con otro nombre.");
+                alert("Municipio no encontrado.");
             }
-            searchContainer.style.display = 'none';
-            searchContainer.classList.remove('active');
         }
 
-        // Eventos del buscador
-        toggleSearchBtn.addEventListener('click', function() {
-            if (searchContainer.style.display === 'none') {
-                searchContainer.style.display = 'flex';
-                searchContainer.classList.add('active');
-                searchInput.focus();
-            } else {
-                searchContainer.style.display = 'none';
-                searchContainer.classList.remove('active');
+        // Listener para la tecla Enter
+        document.getElementById('search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchMunicipio();
             }
-        });
-
-        searchButton.addEventListener('click', searchMunicipio);
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') searchMunicipio();
         });
 
         // Eventos generales del mapa
         map.on('click', function() {
             closeSidebar();
-            searchContainer.style.display = 'none';
-            searchContainer.classList.remove('active');
         });
 
         </script>
