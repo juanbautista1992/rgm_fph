@@ -16,16 +16,13 @@
 
         <style>
             html, body { width: 100%; height: 100%; padding: 0; margin: 0; font-family: sans-serif; overflow: hidden; }
-            
             #header {
                 position: absolute; top: 0; width: 100%; height: 50px;
                 background-color: #003366; color: white;
                 display: flex; align-items: center; justify-content: center;
                 z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
             }
-            
             #header h1 { margin: 0; font-size: 1rem; text-transform: uppercase; }
-
             #map { width: 100%; height: calc(100% - 50px); margin-top: 50px; }
 
             /* Panel Lateral */
@@ -36,16 +33,12 @@
                 box-shadow: 0 4px 10px rgba(0,0,0,0.3);
                 border-top: 4px solid #d32f2f;
             }
-
             .sidebar-content { padding: 15px; }
             .sidebar-logo { display: block; margin: 0 auto 10px; max-width: 100px; }
             .close-sidebar { float: right; cursor: pointer; font-size: 1.2rem; font-weight: bold; }
-            
-            /* Ajuste para que las tablas de QGIS se vean bien en el panel */
             #feature-info table { width: 100%; border-collapse: collapse; }
             #feature-info th { text-align: left; font-size: 0.8rem; background: #f2f2f2; padding: 5px; }
             #feature-info td { font-size: 0.85rem; padding: 5px; border-bottom: 1px solid #eee; }
-            #feature-info img { width: 100%; margin-top: 10px; border-radius: 3px; }
         </style>
     </head>
     <body>
@@ -85,90 +78,71 @@
         }).fitBounds([[-17.6405,-65.9694],[-17.5453,-65.8554]]);
 
         // --- MAPAS BASE ---
-        var googleSat = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {attribution: 'Google'});
+        var googleSat = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {attribution: 'Google'}).addTo(map);
         var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: 'OSM'});
-        var lightMap = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {attribution: '© CARTO'});
         var sinMapa = L.layerGroup();
     
         var baseMaps = {
             "Satélite Google": googleSat,
             "OpenStreetMap": osm,
-            "Mapa Claro": lightMap,
             "Sin Mapa Base": sinMapa
         };
 
-        // --- FUNCIONES DEL PANEL ---
         function showSidebar(content) {
             document.getElementById('feature-info').innerHTML = content;
             document.getElementById('sidebar').style.display = 'block';
         }
         function closeSidebar() { document.getElementById('sidebar').style.display = 'none'; }
-        
-        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
 
-        // --- SIMBOLOGÍA ORIGINAL DE QGIS (COPIADA DE TU CÓDIGO) ---
-        function style_MANZANOSINE2024_0_0() {
-            return { pane: 'pane_MANZANOSINE2024_0', opacity: 1, color: 'rgba(170,170,170,1.0)', weight: 1.0, fill: true, fillOpacity: 1, fillColor: 'rgba(133,182,111,0.0)', interactive: false };
-        }
-        function style_MUNICIPIOS_CBBA_1_0() {
-            return { pane: 'pane_MUNICIPIOS_CBBA_1', opacity: 1, color: 'rgba(14,0,208,1.0)', weight: 3.0, fill: true, fillOpacity: 1, fillColor: 'rgba(255,255,255,0.0)', interactive: false };
-        }
-        function style_AUs_CBBA_2_0() {
-            return { pane: 'pane_AUs_CBBA_2', opacity: 1, color: 'rgba(35,35,35,1.0)', weight: 2.0, fill: true, fillOpacity: 1, fillColor: 'rgba(190,207,80,0.0)', interactive: false };
-        }
+        // --- SIMBOLOGÍA ---
+        function style_MANZANOSINE2024_0_0() { return { opacity: 1, color: 'rgba(170,170,170,1.0)', weight: 1.0, fill: true, fillOpacity: 0.4, fillColor: 'rgba(133,182,111,0.2)', interactive: false }; }
+        function style_MUNICIPIOS_CBBA_1_0() { return { opacity: 1, color: 'rgba(14,0,208,1.0)', weight: 3.0, fill: false, interactive: false }; }
+        function style_AUs_CBBA_2_0() { return { opacity: 1, color: 'rgba(35,35,35,1.0)', weight: 2.0, fill: false, interactive: false }; }
         function style_RGM1_3_0() {
-            return { pane: 'pane_RGM1_3', radius: 6.0, opacity: 1, color: 'rgba(255,255,255,1.0)', weight: 3.0, fill: true, fillOpacity: 1, fillColor: 'rgba(219,30,42,1.0)', interactive: true };
+            return { radius: 8.0, opacity: 1, color: 'white', weight: 3.0, fill: true, fillOpacity: 1, fillColor: 'rgba(219,30,42,1.0)', interactive: true };
         }
 
-        // --- CARGA DE CAPAS CON INTERACCIÓN AL PANEL ---
-        map.createPane('pane_MANZANOSINE2024_0');
-        var layer_MANZANOSINE2024_0 = new L.geoJson(json_MANZANOSINE2024_0, { pane: 'pane_MANZANOSINE2024_0', style: style_MANZANOSINE2024_0_0 }).addTo(map);
+        // --- CAPAS ---
+        var layer_MANZANOSINE2024_0 = new L.geoJson(json_MANZANOSINE2024_0, { style: style_MANZANOSINE2024_0_0 }).addTo(map);
+        var layer_MUNICIPIOS_CBBA_1 = new L.geoJson(json_MUNICIPIOS_CBBA_1, { style: style_MUNICIPIOS_CBBA_1_0 }).addTo(map);
+        var layer_AUs_CBBA_2 = new L.geoJson(json_AUs_CBBA_2, { style: style_AUs_CBBA_2_0 }).addTo(map);
 
-        map.createPane('pane_MUNICIPIOS_CBBA_1');
-        var layer_MUNICIPIOS_CBBA_1 = new L.geoJson(json_MUNICIPIOS_CBBA_1, { pane: 'pane_MUNICIPIOS_CBBA_1', style: style_MUNICIPIOS_CBBA_1_0 }).addTo(map);
-
-        map.createPane('pane_AUs_CBBA_2');
-        var layer_AUs_CBBA_2 = new L.geoJson(json_AUs_CBBA_2, { pane: 'pane_AUs_CBBA_2', style: style_AUs_CBBA_2_0 }).addTo(map);
-
-        map.createPane('pane_RGM1_3');
+        // CAPA RGM CON PANEL E IMÁGENES
         var layer_RGM1_3 = new L.geoJson(json_RGM1_3, {
-            pane: 'pane_RGM1_3',
-            style: style_RGM1_3_0,
-            pointToLayer: function (feature, latlng) { return L.circleMarker(latlng, style_RGM1_3_0()); },
+            pointToLayer: function (feature, latlng) {
+                return L.circleMarker(latlng, style_RGM1_3_0());
+            },
             onEachFeature: function(feature, layer) {
                 layer.on('click', function(e) {
                     L.DomEvent.stopPropagation(e);
-                    // Aquí construimos el contenido de la tabla del panel
-                    var info = '<table>' +
-                        '<tr><th>Punto:</th><td>' + (feature.properties['Punto'] || '') + '</td></tr>' +
-                        '<tr><th>Latitude:</th><td>' + (feature.properties['Latitude'] || '') + '</td></tr>' +
-                        '<tr><th>Longitude:</th><td>' + (feature.properties['Longitude'] || '') + '</td></tr>' +
-                        '<tr><th>Norte:</th><td>' + (feature.properties['Norte'] || '') + '</td></tr>' +
-                        '<tr><th>Este:</th><td>' + (feature.properties['Este'] || '') + '</td></tr>';
+                    var props = feature.properties;
+                    var content = '<table>' +
+                        '<tr><th>Punto:</th><td>' + (props['Punto'] || 'S/N') + '</td></tr>' +
+                        '<tr><th>Norte:</th><td>' + (props['Norte'] || '-') + '</td></tr>' +
+                        '<tr><th>Este:</th><td>' + (props['Este'] || '-') + '</td></tr>';
                     
-                    if (feature.properties['Foto']) {
-                        var imgPath = "images/" + String(feature.properties['Foto']).replace(/[\\/:]/g, '_').trim();
-                        info += '<tr><td colspan="2"><img src="' + imgPath + '"></td></tr>';
+                    if (props['Foto']) {
+                        // Limpia la ruta para quedarse solo con uno.jpg, dos.jpg, etc.
+                        var nombreArchivo = String(props['Foto']).split(/[\\/]/).pop();
+                        content += '<tr><td colspan="2"><img src="images/' + nombreArchivo + '" style="width:100%; border-radius:5px; margin-top:10px;" onerror="this.src=\'https://via.placeholder.com/300x200?text=Foto+No+Encontrada\'"></td></tr>';
                     }
-                    info += '</table>';
-                    showSidebar(info);
+                    content += '</table>';
+                    showSidebar(content);
                 });
             }
         }).addTo(map);
 
-        // --- CONTROLES ---
+        // CONTROLES
         L.control.layers(baseMaps, {
-            "RGM1": layer_RGM1_3,
-            "AUs_CBBA": layer_AUs_CBBA_2,
-            "MUNICIPIOS_CBBA": layer_MUNICIPIOS_CBBA_1,
-            "MANZANOS INE 2024": layer_MANZANOSINE2024_0
+            "Puntos RGM": layer_RGM1_3,
+            "Áreas Urbanas": layer_AUs_CBBA_2,
+            "Municipios": layer_MUNICIPIOS_CBBA_1,
+            "Manzanos": layer_MANZANOSINE2024_0
         }, {collapsed: false}).addTo(map);
-        
+
         L.control.zoom({ position: 'topright' }).addTo(map);
         L.control.locate({position: 'topright'}).addTo(map);
-
         map.on('click', function() { closeSidebar(); });
-
         </script>
     </body>
 </html>
